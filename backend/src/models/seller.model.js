@@ -7,7 +7,7 @@ const createSellerTable = async () => {
         user_id INTEGER NOT NULL,
         store_name VARCHAR(100) NOT NULL,
         store_description TEXT,
-        FOREIGN KEY (seller_id) REFERENCES users(user_id)
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
       );
     `;
     await pool.query(query);
@@ -78,7 +78,7 @@ const createSeller = async (sellerData) => {
       VALUES ($1, $2, $3)
       RETURNING *;
     `;
-    const values = [sellerData.seller_id, sellerData.store_name, sellerData.store_description];
+    const values = [sellerData.user_id, sellerData.store_name, sellerData.store_description];
     const result = await pool.query(query, values);
     return result.rows[0];
   } catch (err) {
