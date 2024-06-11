@@ -33,6 +33,15 @@ exports.createCategory = async (req, res) => {
   }
 };
 
+exports.createMultipleCategories = async (req, res) => {
+  try {
+    const newCategories = await categoryService.createMultipleCategories(req.body);
+    res.status(201).json(newCategories);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // Update a single category
 exports.updateCategory = async (req, res) => {
   try {

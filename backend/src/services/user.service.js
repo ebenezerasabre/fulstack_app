@@ -32,6 +32,14 @@ exports.createUser = async (userData) => {
   }
 };
 
+exports.createMultipleUsers = async (usersData) => {
+  try {
+    return await userModel.createMultipleUsers(usersData);
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 exports.updateUser = async (id, userData) => {
   try {
     return await userModel.updateUser(id, userData);

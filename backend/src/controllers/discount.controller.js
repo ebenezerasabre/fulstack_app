@@ -31,6 +31,15 @@ exports.createDiscount = async (req, res) => {
   }
 };
 
+exports.createMultipleDiscounts = async (req, res) => {
+    try {
+      const newDiscounts = await discountService.createMultipleDiscounts(req.body);
+      res.status(201).json(newDiscounts);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
 exports.updateDiscount = async (req, res) => {
   try {
     const updatedDiscount = await discountService.updateDiscount(req.params.id, req.body);

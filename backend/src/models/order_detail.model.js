@@ -55,6 +55,33 @@ const createOrderDetail = async (orderDetailData) => {
   }
 };
 
+const createMultipleOrderDetails = async (orderDetailsData) => {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const query = `
+        INSERT INTO order_details (order_id, product_id, quantity, price)
+        VALUES 
+        ${orderDetailsData.map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ')}
+        RETURNING *;
+      `;
+      const values = orderDetailsData.flatMap(detail => [
+        detail.order_id,
+        detail.product_id,
+        detail.quantity,
+        detail.price
+      ]);
+      const result = await client.query(query, values);
+      await client.query('COMMIT');
+      return result.rows;
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw new Error(err);
+    } finally {
+      client.release();
+    }
+  };
+
 const updateOrderDetail = async (id, orderDetailData) => {
   try {
     const query = `
@@ -94,6 +121,7 @@ module.exports = {
   getAllOrderDetails,
   getOrderDetailById,
   createOrderDetail,
+  createMultipleOrderDetails,
   updateOrderDetail,
   deleteOrderDetail
 };

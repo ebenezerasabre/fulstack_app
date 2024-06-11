@@ -12,6 +12,9 @@ router.get('/:id', sellerController.getSellerById);
 // Define the route to create a new seller
 router.post('/', sellerController.createSeller);
 
+// Define route to create mutiple sellers
+router.post('/bulk', sellerController.createMultipleSellers);
+
 // Define the route to update a seller by ID
 router.put('/:id', sellerController.updateSeller);
 

@@ -53,6 +53,31 @@ const createCategory = async (categoryData) => {
   }
 };
 
+const createMultipleCategories = async (categoriesData) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const query = `
+      INSERT INTO categories (category_name, description)
+      VALUES 
+      ${categoriesData.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(', ')}
+      RETURNING *;
+    `;
+    const values = categoriesData.flatMap(category => [
+      category.category_name,
+      category.description
+    ]);
+    const result = await client.query(query, values);
+    await client.query('COMMIT');
+    return result.rows;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw new Error(err);
+  } finally {
+    client.release();
+  }
+};
+
 // Update a single category by ID
 const updateCategory = async (id, categoryData) => {
   try {
@@ -85,6 +110,7 @@ module.exports = {
   getAllCategories,
   getCategoryById,
   createCategory,
+  createMultipleCategories,
   updateCategory,
   deleteCategory
 };

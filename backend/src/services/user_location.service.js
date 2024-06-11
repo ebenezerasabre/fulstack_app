@@ -24,6 +24,14 @@ exports.createUserLocation = async (userLocationData) => {
   }
 };
 
+exports.createMultipleUserLocations = async (userLocationsData) => {
+  try {
+    return await userLocationModel.createMultipleUserLocations(userLocationsData);
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 exports.updateUserLocation = async (id, userLocationData) => {
   try {
     return await userLocationModel.updateUserLocation(id, userLocationData);

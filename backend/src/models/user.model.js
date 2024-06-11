@@ -60,6 +60,36 @@ const createUser = async (userData) => {
   }
 };
 
+const createMultipleUsers = async (usersData) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const query = `
+      INSERT INTO users (username, email, phone, is_seller)
+      VALUES 
+      ${usersData.map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ')}
+      RETURNING *;
+    `;
+    const values = usersData.flatMap(user => [
+      user.username,
+      user.email,
+      user.phone,
+      user.address,
+      user.is_seller
+    ]);
+    const result = await client.query(query, values);
+    await client.query('COMMIT');
+    return result.rows;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw new Error(err);
+  } finally {
+    client.release();
+  }
+};
+
+
+
 const updateUser = async (id, userData) => {
   try {
     const query = `
@@ -123,6 +153,7 @@ module.exports = {
   getUserById,
   countUsers,
   createUser,
+  createMultipleUsers,
   updateUser,
   updateUsers,
   deleteUser

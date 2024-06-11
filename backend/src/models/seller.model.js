@@ -86,6 +86,35 @@ const createSeller = async (sellerData) => {
   }
 };
 
+
+const createMultipleSellers = async (sellersData) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const query = `
+      INSERT INTO sellers (
+        user_id, store_name, store_description
+      ) VALUES 
+      ${sellersData.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2}, $${i * 3 + 3})`).join(', ')}
+      RETURNING *;
+    `;
+    const values = sellersData.flatMap(seller => [
+      seller.store_name,
+      seller.store_description
+    ]);
+    const result = await client.query(query, values);
+    await client.query('COMMIT');
+    return result.rows;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw new Error(err);
+  } finally {
+    client.release();
+  }
+};
+
+
+
 // Update a single seller by ID
 const updateSeller = async (id, sellerData) => {
   try {
@@ -120,6 +149,7 @@ module.exports = {
   getSellerById,
   getNearBySellers,
   createSeller,
+  createMultipleSellers,
   updateSeller,
   deleteSeller
 };

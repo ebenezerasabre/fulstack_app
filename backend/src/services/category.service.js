@@ -27,6 +27,15 @@ exports.createCategory = async (categoryData) => {
   }
 };
 
+// create multiple categories
+exports.createMultipleCategories = async (categoriesData) => {
+  try {
+    return await categoryModel.createMultipleCategories(categoriesData);
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 
 
 // Update a single category by ID

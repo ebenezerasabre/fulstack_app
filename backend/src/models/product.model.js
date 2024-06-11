@@ -85,6 +85,38 @@ const createProduct = async (productData) => {
   }
 };
 
+const createMultipleProducts = async (productsData) => {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const query = `
+        INSERT INTO products (
+          seller_id, category_id, product_name, product_description, price, quantity_available
+        ) VALUES 
+        ${productsData.map((_, i) => `($${i * 6 + 1}, $${i * 6 + 2}, $${i * 6 + 3}, $${i * 6 + 4}, $${i * 6 + 5}, $${i * 6 + 6})`).join(', ')}
+        RETURNING *;
+      `;
+      const values = productsData.flatMap(product => [
+        product.seller_id,
+        product.category_id,
+        product.product_name,
+        product.product_description,
+        product.price,
+        product.quantity_available
+      ]);
+      const result = await client.query(query, values);
+      await client.query('COMMIT');
+      return result.rows;
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw new Error(err);
+    } finally {
+      client.release();
+    }
+  };
+  
+  
+
 const updateProduct = async (id, productData) => {
   try {
     const query = `
@@ -130,6 +162,7 @@ module.exports = {
   searchProducts,
   getProductById,
   createProduct,
+  createMultipleProducts,
   updateProduct,
   deleteProduct
 };

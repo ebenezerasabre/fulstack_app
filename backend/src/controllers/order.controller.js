@@ -31,6 +31,15 @@ exports.createOrder = async (req, res) => {
   }
 };
 
+exports.createMultipleOrders = async (req, res) => {
+    try {
+      const newOrders = await orderService.createMultipleOrders(req.body);
+      res.status(201).json(newOrders);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
 exports.updateOrder = async (req, res) => {
   try {
     const updatedOrder = await orderService.updateOrder(req.params.id, req.body);

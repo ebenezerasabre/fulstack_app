@@ -31,6 +31,15 @@ exports.createOrderDetail = async (req, res) => {
   }
 };
 
+exports.createMultipleOrderDetails = async (req, res) => {
+    try {
+      const newOrderDetails = await orderDetailService.createMultipleOrderDetails(req.body);
+      res.status(201).json(newOrderDetails);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
 exports.updateOrderDetail = async (req, res) => {
   try {
     const updatedOrderDetail = await orderDetailService.updateOrderDetail(req.params.id, req.body);

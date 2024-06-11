@@ -42,6 +42,15 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+exports.createMultipleProducts = async (req, res) => {
+    try {
+      const newProducts = await productService.createMultipleProducts(req.body);
+      res.status(201).json(newProducts);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
 exports.updateProduct = async (req, res) => {
   try {
     const updatedProduct = await productService.updateProduct(req.params.id, req.body);

@@ -47,6 +47,15 @@ exports.createSeller = async (req, res) => {
   }
 };
 
+exports.createMultipleSellers = async (req, res) => {
+  try {
+    const newSellers = await sellerService.createMultipleSellers(req.body);
+    res.status(201).json(newSellers);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // Update a single seller
 exports.updateSeller = async (req, res) => {
   try {

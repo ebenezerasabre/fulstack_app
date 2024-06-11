@@ -7,6 +7,9 @@ const productRoutes = require('./product.routes');
 const discountRoutes = require('./discount.routes');
 const orderRoutes = require('./order.routes');
 const orderDetailRoutes = require('./order_detail.routes');
+const reviewRoutes = require('./review.routes');
+const productImageRoutes = require('./product_image.routes');
+const authRoutes = require('./auth.routes');
 
 const router = express.Router();
 
@@ -18,6 +21,9 @@ router.use('/products', productRoutes);
 router.use('/discounts', discountRoutes);
 router.use('/orders', orderRoutes);
 router.use('/orderDetails', orderDetailRoutes);
+router.use('/reviews', reviewRoutes);
+router.use('/productImages', productImageRoutes);
+router.use('/auth', authRoutes);
 
 
 

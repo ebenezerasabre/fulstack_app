@@ -24,6 +24,14 @@ exports.createOrderDetail = async (orderDetailData) => {
   }
 };
 
+exports.createMultipleOrderDetails = async (orderDetailsData) => {
+    try {
+      return await orderDetailModel.createMultipleOrderDetails(orderDetailsData);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
 exports.updateOrderDetail = async (id, orderDetailData) => {
   try {
     return await orderDetailModel.updateOrderDetail(id, orderDetailData);

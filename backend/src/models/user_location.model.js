@@ -67,6 +67,42 @@ const createUserLocation = async (userLocationData) => {
   }
 };
 
+
+const createMultipleUserLocations = async (userLocationsData) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const query = `
+      INSERT INTO user_location (
+        user_id, street, city, state, country, postal_code, latitude, longitude, location
+      ) VALUES 
+      ${userLocationsData.map((_, i) => `($${i * 10 + 1}, $${i * 10 + 2}, $${i * 10 + 3}, $${i * 10 + 4}, $${i * 10 + 5}, $${i * 10 + 6}, $${i * 10 + 7}, $${i * 10 + 8}, ST_SetSRID(ST_MakePoint($${i * 10 + 9}, $${i * 10 + 10}), 4326))`).join(', ')}
+      RETURNING *;
+    `;
+    const values = userLocationsData.flatMap(loc => [
+      loc.user_id,
+      loc.street,
+      loc.city,
+      loc.state,
+      loc.country,
+      loc.postal_code,
+      loc.latitude,
+      loc.longitude,
+      loc.latitude,
+      loc.longitude
+    ]);
+    const result = await client.query(query, values);
+    await client.query('COMMIT');
+    return result.rows;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw new Error(err);
+  } finally {
+    client.release();
+  }
+};
+
+
 const updateUserLocation = async (id, userLocationData) => {
   try {
     const query = `
@@ -116,6 +152,7 @@ module.exports = {
   getAllUserLocations,
   getUserLocationById,
   createUserLocation,
+  createMultipleUserLocations,
   updateUserLocation,
   deleteUserLocation
 };

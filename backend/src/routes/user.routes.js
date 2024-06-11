@@ -8,6 +8,9 @@ const router = express.Router();
 // Define route to create user
 router.post('/', userController.createUser);
 
+// Define route to create multiple users at a time
+router.post('/bulk', userController.createMultipleUsers);
+
 // Define the route to count all users
 router.get('/count', userController.countUsers);
 

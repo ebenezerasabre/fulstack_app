@@ -24,6 +24,14 @@ exports.createDiscount = async (discountData) => {
   }
 };
 
+exports.createMultipleDiscounts = async (discountsData) => {
+    try {
+      return await discountModel.createMultipleDiscounts(discountsData);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
 exports.updateDiscount = async (id, discountData) => {
   try {
     return await discountModel.updateDiscount(id, discountData);

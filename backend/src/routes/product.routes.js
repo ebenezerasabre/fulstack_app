@@ -6,6 +6,7 @@ router.get('/search', productController.searchProducts);
 router.get('/', productController.getAllProducts);
 router.get('/:id', productController.getProductById);
 router.post('/', productController.createProduct);
+router.post('/bulk', productController.createMultipleProducts);
 router.put('/:id', productController.updateProduct);
 router.delete('/:id', productController.deleteProduct);
 

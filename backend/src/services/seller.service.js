@@ -38,6 +38,14 @@ exports.createSeller = async (sellerData) => {
   }
 };
 
+exports.createMultipleSellers = async (sellersData) => {
+  try {
+    return await sellerModel.createMultipleSellers(sellersData);
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 // Update a single seller by ID
 exports.updateSeller = async (id, sellerData) => {
   try {

@@ -31,6 +31,15 @@ exports.createUserLocation = async (req, res) => {
   }
 };
 
+exports.createMultipleUserLocations = async (req, res) => {
+  try {
+    const newUserLocations = await userLocationService.createMultipleUserLocations(req.body);
+    res.status(201).json(newUserLocations);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.updateUserLocation = async (req, res) => {
   try {
     const updatedUserLocation = await userLocationService.updateUserLocation(req.params.id, req.body);

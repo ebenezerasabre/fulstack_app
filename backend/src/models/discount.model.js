@@ -54,6 +54,33 @@ const createDiscount = async (discountData) => {
   }
 };
 
+const createMultipleDiscounts = async (discountsData) => {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const query = `
+        INSERT INTO discounts (product_id, discount_percentage, start_date, end_date)
+        VALUES 
+        ${discountsData.map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ')}
+        RETURNING *;
+      `;
+      const values = discountsData.flatMap(discount => [
+        discount.product_id,
+        discount.discount_percentage,
+        discount.start_date,
+        discount.end_date
+      ]);
+      const result = await client.query(query, values);
+      await client.query('COMMIT');
+      return result.rows;
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw new Error(err);
+    } finally {
+      client.release();
+    }
+  };
+
 const updateDiscount = async (id, discountData) => {
   try {
     const query = `
@@ -93,6 +120,7 @@ module.exports = {
   getAllDiscounts,
   getDiscountById,
   createDiscount,
+  createMultipleDiscounts,
   updateDiscount,
   deleteDiscount
 };

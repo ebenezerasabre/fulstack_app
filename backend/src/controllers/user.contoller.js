@@ -11,6 +11,15 @@ exports.createUser = async (req, res) => {
 
 };
 
+exports.createMultipleUsers = async (req, res) => {
+  try {
+    const newUsers = await userService.createMultipleUsers(req.body);
+    res.status(201).json(newUsers);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.getUserById = async (req, res) => {
   try {
     const user = await userService.getUserById(req.params.id);

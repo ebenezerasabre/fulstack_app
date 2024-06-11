@@ -1,4 +1,4 @@
-const orderModel = require('../models/order.model');
+const orderModel = require('../models/orders.model');
 
 exports.getAllOrders = async () => {
   try {
@@ -23,6 +23,14 @@ exports.createOrder = async (orderData) => {
     throw new Error(err);
   }
 };
+
+exports.createMultipleOrders = async (ordersData) => {
+    try {
+      return await orderModel.createMultipleOrders(ordersData);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
 
 exports.updateOrder = async (id, orderData) => {
   try {

@@ -32,6 +32,14 @@ exports.createProduct = async (productData) => {
   }
 };
 
+exports.createMultipleProducts = async (productsData) => {
+    try {
+      return await productModel.createMultipleProducts(productsData);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
 exports.updateProduct = async (id, productData) => {
   try {
     return await productModel.updateProduct(id, productData);

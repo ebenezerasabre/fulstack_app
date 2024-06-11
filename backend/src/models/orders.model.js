@@ -47,6 +47,29 @@ const createOrder = async (orderData) => {
   }
 };
 
+const createMultipleOrders = async (ordersData) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const query = `
+      INSERT INTO orders (customer_id)
+      VALUES 
+      ${ordersData.map((_, i) => `($${i + 1})`).join(', ')}
+      RETURNING *;
+    `;
+    const values = ordersData.map(order => order.customer_id);
+    const result = await client.query(query, values);
+    await client.query('COMMIT');
+    return result.rows;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw new Error(err);
+  } finally {
+    client.release();
+  }
+};
+
+
 const updateOrder = async (id, orderData) => {
   try {
     const query = `
@@ -82,6 +105,7 @@ module.exports = {
   getAllOrders,
   getOrderById,
   createOrder,
+  createMultipleOrders,
   updateOrder,
   deleteOrder
 };
