@@ -12,7 +12,6 @@ exports.getAllProducts = async (req, res) => {
 exports.searchProducts = async (req, res) => {
     try {
       const searchWord = req.query.query;
-      console.log(searchWord);
       const products = await productService.searchProducts(searchWord);
       res.status(200).json(products);
     } catch (err) {

@@ -157,6 +157,21 @@ const deleteProduct = async (id) => {
   }
 };
 
+// magic queries
+
+
+// Products with best discounts closest to user with location
+
+
+
+// Products closest to user with location
+
+
+
+// combined products with best discount closest to users with location
+
+
+
 module.exports = {
   getAllProducts,
   searchProducts,
